@@ -1,53 +1,37 @@
-import type { FormEvent } from "react";
 import toast from "react-hot-toast";
 import css from "./SearchBar.module.css";
 
 interface SearchBarProps {
-  onSubmit: (query: string) => void;
+  onSubmit: (topic: string) => void;
 }
 
-const SearchBar = ({ onSubmit }: SearchBarProps) => {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const query = (form.query as HTMLInputElement).value.trim();
+export default function SearchBar({ onSubmit }: SearchBarProps) {
+  const handleAction = (formData: FormData) => {
+    const topic = formData.get("query") as string;
 
-    if (!query) {
-      toast.error("Please enter your search query.");
+    if (!topic || topic.trim() === "") {
+      toast.error("Please enter a search term!");
       return;
     }
 
-    onSubmit(query);
-    form.reset();
+    onSubmit(topic.trim());
   };
 
   return (
     <header className={css.header}>
-      <div className={css.container}>
-        <a
-          className={css.link}
-          href="https://www.themoviedb.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by TMDB
-        </a>
-        <form className={css.form} onSubmit={handleSubmit}>
-          <input
-            className={css.input}
-            type="text"
-            name="query"
-            autoComplete="off"
-            placeholder="Search movies..."
-            autoFocus
-          />
-          <button className={css.button} type="submit">
-            Search
-          </button>
-        </form>
-      </div>
+      <form className={css.form} action={handleAction}>
+        <input
+          className={css.input}
+          type="text"
+          name="query"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+        />
+        <button className={css.button} type="submit">
+          Search
+        </button>
+      </form>
     </header>
   );
-};
-
-export default SearchBar;
+}
